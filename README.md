@@ -165,7 +165,13 @@ draft PR through the GitHub REST API. It does not touch the local checkout or me
 - `infra/` — dbt ingestion and DataHub Actions recipes.
 - `evals/` — scenario dataset and executable evaluation.
 - `skills/ml-change-safety/` — reusable DataHub agent workflow.
-- `docs/` — architecture, safety model, demo script, and submission draft.
+- `docs/` — architecture, safety model, demo script, submission copy, and verified
+  Devpost evidence ledger.
+
+The final public submission is available at
+[devpost.com/software/lineageguard-ai](https://devpost.com/software/lineageguard-ai),
+with its durable status and public-link audit recorded in
+[`docs/SUBMISSION_EVIDENCE.md`](docs/SUBMISSION_EVIDENCE.md).
 
 ## Open-source provenance
 
