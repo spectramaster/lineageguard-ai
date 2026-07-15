@@ -1,0 +1,11 @@
+.git
+.venv
+.runtime
+.pytest_cache
+.ruff_cache
+__pycache__
+artifacts/generated
+demo/dbt_project/target
+demo/dbt_project/logs
+*.duckdb
+*.duckdb.wal

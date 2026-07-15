@@ -1,0 +1,8 @@
+lineageguard_demo:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: target/lineageguard.duckdb
+      schema: main
+      threads: 2

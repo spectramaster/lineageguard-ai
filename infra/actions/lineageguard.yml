@@ -1,0 +1,25 @@
+name: lineageguard-schema-monitor
+enabled: true
+source:
+  type: kafka
+  config:
+    connection:
+      bootstrap: localhost:9092
+      schema_registry_url: http://localhost:8080/schema-registry/api/
+      consumer_config:
+        max.poll.interval.ms: 120000
+filters:
+  - type: event_type
+    config:
+      filter:
+        MetadataChangeLogEvent_v1:
+          event:
+            - entityType: dataset
+              aspectName: schemaMetadata
+action:
+  type: lineageguard
+  config:
+    endpoint: http://localhost:8000/api/v1/demo/validate
+options:
+  failure_mode: CONTINUE
+  failed_events_dir: .runtime/failed-events

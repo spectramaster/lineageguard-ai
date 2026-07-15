@@ -1,0 +1,44 @@
+[
+  {
+    "id": "breaking-rename",
+    "change_type": "column_renamed",
+    "previous_field": "customer_age",
+    "field": "age_years",
+    "expected_score": 100,
+    "expected_severity": "critical",
+    "expected_decision": "block_and_remediate"
+  },
+  {
+    "id": "column-removed",
+    "change_type": "column_removed",
+    "previous_field": "customer_age",
+    "expected_score": 100,
+    "expected_severity": "critical",
+    "expected_decision": "block_and_remediate"
+  },
+  {
+    "id": "type-changed",
+    "change_type": "type_changed",
+    "field": "customer_age",
+    "old_type": "INTEGER",
+    "new_type": "VARCHAR",
+    "expected_score": 100,
+    "expected_severity": "critical",
+    "expected_decision": "block_and_remediate"
+  },
+  {
+    "id": "freshness-failure",
+    "change_type": "freshness_failed",
+    "expected_score": 90,
+    "expected_severity": "critical",
+    "expected_decision": "block_and_remediate"
+  },
+  {
+    "id": "additive-but-high-blast-radius",
+    "change_type": "column_added",
+    "field": "marketing_segment",
+    "expected_score": 65,
+    "expected_severity": "high",
+    "expected_decision": "generate_draft_pr"
+  }
+]

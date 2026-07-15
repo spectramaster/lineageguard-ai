@@ -1,0 +1,17 @@
+.DS_Store
+.env
+.user.yml
+.venv/
+.runtime/
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+*.py[cod]
+*.duckdb
+*.duckdb.wal
+target/
+logs/
+demo/dbt_project/target/
+demo/dbt_project/logs/
+demo/dbt_project/dbt_packages/
+artifacts/generated/

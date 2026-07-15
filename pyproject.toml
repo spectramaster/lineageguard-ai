@@ -1,0 +1,61 @@
+[project]
+name = "lineageguard-ai"
+version = "0.1.0"
+description = "An event-driven ML change safety and remediation agent powered by DataHub context."
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = { text = "Apache-2.0" }
+dependencies = [
+  "fastapi>=0.116,<1",
+  "httpx>=0.28,<1",
+  "pydantic>=2.11,<3",
+  "pydantic-settings>=2.10,<3",
+  "typer>=0.16,<1",
+  "uvicorn[standard]>=0.35,<1",
+]
+
+[project.optional-dependencies]
+demo = [
+  "dbt-duckdb>=1.9,<2",
+  "duckdb>=1.4,<2",
+]
+datahub = [
+  "acryl-datahub[dbt]>=1.3,<2",
+  "acryl-datahub-actions>=1.1,<2",
+  "datahub-agent-context>=1.3,<2",
+  "fastmcp>=3,<4",
+  "mcp-server-datahub==0.6.0",
+]
+llm = ["openai>=1.100,<3"]
+dev = [
+  "pytest>=8.4,<9",
+  "pytest-asyncio>=1.1,<2",
+  "pytest-cov>=6.2,<8",
+  "ruff>=0.12,<1",
+]
+
+[project.scripts]
+lineageguard = "lineageguard.cli:app"
+
+[project.entry-points."datahub_actions.action.plugins"]
+lineageguard = "lineageguard.action:LineageGuardDataHubAction"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lineageguard"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+asyncio_mode = "auto"
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

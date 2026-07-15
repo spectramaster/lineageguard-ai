@@ -1,0 +1,28 @@
+{
+  "source": "real DataHub 1.6.0 + official MCP server 0.6.0",
+  "event": "column_renamed: customer_age -> age_years",
+  "risk": {
+    "score": 90,
+    "severity": "critical",
+    "decision": "block_and_remediate"
+  },
+  "context": {
+    "tags": ["Tier1", "PII"],
+    "owners": ["urn:li:corpuser:ml-platform"],
+    "affected_features": ["customer_age"],
+    "affected_models": ["churn-model-v3"],
+    "affected_deployments": ["churn-api-production"],
+    "downstream_entities": 7
+  },
+  "repair": {
+    "strategy": "compatibility_alias",
+    "original_text": "as age_years",
+    "replacement_text": "as customer_age"
+  },
+  "validation": {
+    "passed": true,
+    "check": "dbt build",
+    "passed_nodes_and_tests": 9
+  },
+  "action_writeback_urn": "urn:li:document:lineageguard-datahub-31e4e1b6a72c9344"
+}

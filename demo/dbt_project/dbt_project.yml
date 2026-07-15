@@ -1,0 +1,10 @@
+name: lineageguard_demo
+version: 1.0.0
+config-version: 2
+profile: lineageguard_demo
+model-paths: ["models"]
+seed-paths: ["seeds"]
+clean-targets: ["target", "dbt_packages"]
+models:
+  lineageguard_demo:
+    +materialized: table

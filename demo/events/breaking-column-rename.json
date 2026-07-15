@@ -1,0 +1,11 @@
+{
+  "event_id": "demo-breaking-rename-001",
+  "asset_urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,lineageguard.main.stg_customers,PROD)",
+  "asset_name": "stg_customers",
+  "change_type": "column_renamed",
+  "previous_field": "customer_age",
+  "field": "age_years",
+  "old_type": "INTEGER",
+  "new_type": "INTEGER",
+  "description": "customer_age was renamed without a compatibility alias"
+}

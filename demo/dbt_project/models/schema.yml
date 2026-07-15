@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: Canonical customer staging model used to produce churn features.
+    columns:
+      - name: customer_id
+        tests: [not_null, unique]
+      - name: customer_age
+        description: Stable feature contract consumed by customer_features.
+        tests: [not_null]
+  - name: customer_features
+    description: Production feature table for the churn model.
+    meta:
+      business_owner: ml-platform
+      data_tier: Tier1
+    columns:
+      - name: customer_id
+        tests: [not_null, unique]
+      - name: customer_age
+        tests: [not_null]

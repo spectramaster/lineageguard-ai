@@ -1,0 +1,23 @@
+source:
+  type: dbt
+  config:
+    manifest_path: demo/dbt_project/target/manifest.json
+    catalog_path: demo/dbt_project/target/catalog.json
+    run_results_paths:
+      - demo/dbt_project/target/run_results.json
+    target_platform: duckdb
+    env: PROD
+    enable_meta_mapping: true
+    meta_mapping:
+      business_owner:
+        match: ".*"
+        operation: add_owner
+        config:
+          owner_type: user
+      data_tier:
+        match: ".*"
+        operation: add_tag
+sink:
+  type: datahub-rest
+  config:
+    server: ${LINEAGEGUARD_DATAHUB_GMS_URL}

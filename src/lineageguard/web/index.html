@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LineageGuard AI</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    body { margin: 0; background: #07111f; color: #ecf4ff; }
+    main { max-width: 1080px; margin: 0 auto; padding: 56px 24px 80px; }
+    .eyebrow { color: #71e8c4; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { font-size: clamp(42px, 8vw, 76px); line-height: .98; margin: 18px 0; max-width: 900px; }
+    .lead { max-width: 720px; color: #a8bad0; font-size: 20px; line-height: 1.6; }
+    button { margin-top: 28px; border: 0; border-radius: 12px; padding: 14px 20px; color: #041014; background: #71e8c4; font-weight: 800; cursor: pointer; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 48px; }
+    .card { background: #0d1b2e; border: 1px solid #203652; border-radius: 16px; padding: 22px; min-height: 150px; }
+    .label { color: #7991ad; font-size: 13px; text-transform: uppercase; letter-spacing: .1em; }
+    .value { font-size: 34px; font-weight: 800; margin-top: 16px; }
+    .critical { color: #ff866f; }
+    pre { white-space: pre-wrap; color: #bcd0e6; font-size: 12px; line-height: 1.55; }
+    .passed { color: #71e8c4; }
+    button:disabled { cursor: wait; opacity: .65; }
+    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">DataHub-powered ML change safety</div>
+  <h1>Stop silent data changes before they break production models.</h1>
+  <p class="lead">LineageGuard reads DataHub's context graph, calculates the real ML blast radius, proposes a tested repair, and preserves the decision for the next engineer or agent.</p>
+  <button id="run">Analyze and validate breaking-schema scenario</button>
+  <section class="grid">
+    <article class="card"><div class="label">Risk score</div><div id="score" class="value">—</div></article>
+    <article class="card"><div class="label">Affected graph</div><div id="impact" class="value">—</div></article>
+    <article class="card"><div class="label">Decision</div><div id="decision" class="value" style="font-size:22px">—</div></article>
+    <article class="card"><div class="label">Sandbox tests</div><div id="validation" class="value">—</div></article>
+  </section>
+  <article class="card" style="margin-top:16px"><div class="label">Risk evidence</div><pre id="signals">Waiting for an event.</pre></article>
+  <article class="card" style="margin-top:16px"><div class="label">Repair plan</div><pre id="plan">Waiting for an event.</pre></article>
+</main>
+<script>
+const eventPayload = {
+  event_id: "demo-breaking-rename-001",
+  asset_urn: "urn:li:dataset:(urn:li:dataPlatform:dbt,lineageguard.main.stg_customers,PROD)",
+  asset_name: "stg_customers",
+  change_type: "column_renamed",
+  previous_field: "customer_age",
+  field: "age_years",
+  old_type: "INTEGER",
+  new_type: "INTEGER",
+  description: "customer_age was renamed without a compatibility alias"
+};
+document.querySelector('#run').addEventListener('click', async () => {
+  const button = document.querySelector('#run');
+  button.disabled = true;
+  button.textContent = 'Tracing DataHub context and running dbt…';
+  try {
+    const response = await fetch('/api/v1/demo/validate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(eventPayload)});
+    if (!response.ok) throw new Error(await response.text());
+    const data = await response.json();
+    document.querySelector('#score').textContent = `${data.report.score}/100`;
+    document.querySelector('#score').className = `value ${data.report.severity === 'critical' ? 'critical' : ''}`;
+    const context = data.report.context;
+    document.querySelector('#impact').textContent = `${context.affected_features.length}F · ${context.affected_models.length}M · ${context.affected_deployments.length}D`;
+    document.querySelector('#decision').textContent = data.report.decision.replaceAll('_', ' ');
+    document.querySelector('#validation').textContent = data.validation?.passed ? 'PASS' : 'FAIL';
+    document.querySelector('#validation').className = `value ${data.validation?.passed ? 'passed' : 'critical'}`;
+    document.querySelector('#signals').textContent = data.report.signals.map(s => `+${s.points}  ${s.label}\n     ${s.evidence.join(' · ')}`).join('\n\n');
+    document.querySelector('#plan').textContent = `${data.repair_plan.title}\n\n${data.repair_plan.explanation}\n\nPatch:\n${data.repair_plan.patches.map(p => `${p.path}\n  ${p.original_text}  →  ${p.replacement_text}`).join('\n')}`;
+  } catch (error) {
+    document.querySelector('#plan').textContent = `Scenario failed: ${error.message}`;
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Run again';
+  }
+});
+</script>
+</body>
+</html>

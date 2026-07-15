@@ -1,0 +1,20 @@
+LineageGuard AI
+Copyright 2026 LineageGuard AI Contributors
+
+This project uses open-source dependencies listed in pyproject.toml and uv.lock.
+
+Architecture and interoperability research consulted the following upstream projects:
+
+- DataHub Analytics Agent (Apache License 2.0)
+  https://github.com/datahub-project/analytics-agent
+- DataHub MCP Server (Apache License 2.0)
+  https://github.com/acryldata/mcp-server-datahub
+- DataHub Skills (Apache License 2.0)
+  https://github.com/datahub-project/datahub-skills
+- DataHub Actions, now maintained in the DataHub monorepo (Apache License 2.0)
+  https://github.com/datahub-project/datahub
+
+The Acryl dbt Impact Analysis Action was reviewed only to understand the existing
+product surface and avoid duplicating its scope. It is licensed under the Server Side
+Public License (SSPL); no source code from that project is copied into LineageGuard AI.
+https://github.com/acryldata/dbt-impact-action
