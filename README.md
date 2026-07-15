@@ -57,7 +57,9 @@ provide production usage percentiles.
 
 The repository also includes captured proof from the verified local run: the
 [DataHub asset context](assets/datahub-asset.jpg), [ML lineage](assets/datahub-lineage.jpg),
-and [decision-document writeback](assets/datahub-decision.jpg).
+and [decision-document writeback](assets/datahub-decision.jpg). A concise
+[2:19 narrated demo](assets/lineageguard-demo.mp4) walks through the same verified
+workflow.
 
 ## Safety properties
 
