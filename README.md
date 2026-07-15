@@ -2,6 +2,8 @@
 
 **Stop silent data changes before they break production models.**
 
+![LineageGuard AI — ML change safety](assets/lineageguard-cover.png)
+
 LineageGuard AI is an event-driven ML change-safety agent built for the **Production
 ML Agents** track of the Build with DataHub Agent Hackathon. It uses DataHub as the
 authoritative context graph, calculates an explainable ML blast radius, proposes a
@@ -50,6 +52,12 @@ The included failure renames `customer_age` to `age_years` without compatibility
 The zero-credential fixture deliberately includes a high-usage signal and scores
 100/100. The real OSS DataHub path scores 90/100 because this local catalog does not
 provide production usage percentiles.
+
+![LineageGuard AI evidence-backed result](assets/demo-result.jpg)
+
+The repository also includes captured proof from the verified local run: the
+[DataHub asset context](assets/datahub-asset.jpg), [ML lineage](assets/datahub-lineage.jpg),
+and [decision-document writeback](assets/datahub-decision.jpg).
 
 ## Safety properties
 
