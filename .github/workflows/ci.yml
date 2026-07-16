@@ -19,6 +19,7 @@ jobs:
           enable-cache: true
       - run: uv sync --extra demo --extra datahub --extra dev
       - run: uv run ruff check .
+      - run: uv run bandit -q -r src
       - run: uv run pytest
       - name: Scan tracked files for secrets
         run: git ls-files -z | xargs -0 uv run detect-secrets-hook --
