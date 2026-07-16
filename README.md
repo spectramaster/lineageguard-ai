@@ -173,6 +173,19 @@ The final public submission is available at
 with its durable status and public-link audit recorded in
 [`docs/SUBMISSION_EVIDENCE.md`](docs/SUBMISSION_EVIDENCE.md).
 
+## Live judge experience
+
+The zero-secret [Cloudflare Pages judge experience](https://lineageguard-ai.pages.dev/)
+replays the verified DataHub result and exposes the real catalog screenshots without
+requiring judges to launch the full local DataHub stack. It is explicitly presented as
+an evidence replay, not as a claim that DataHub itself runs on Cloudflare.
+
+![LineageGuard AI Cloudflare judge experience](assets/lineageguard-cloudflare-live.jpg)
+
+Its source lives in [`cloudflare-site/`](cloudflare-site/). The public production URL,
+static assets, security headers, and complete five-stage interaction were verified on
+2026-07-16.
+
 ## Open-source provenance
 
 The architecture reuses official Apache-2.0 DataHub components: the Python SDK,
