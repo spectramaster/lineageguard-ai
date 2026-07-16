@@ -28,7 +28,8 @@ datahub = [
 ]
 llm = ["openai>=1.100,<3"]
 dev = [
-  "pytest>=8.4,<9",
+  "detect-secrets>=1.5,<2",
+  "pytest>=9.0.3,<10",
   "pytest-asyncio>=1.1,<2",
   "pytest-cov>=6.2,<8",
   "ruff>=0.12,<1",

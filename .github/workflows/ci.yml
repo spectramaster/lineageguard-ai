@@ -20,7 +20,15 @@ jobs:
       - run: uv sync --extra demo --extra datahub --extra dev
       - run: uv run ruff check .
       - run: uv run pytest
+      - name: Scan tracked files for secrets
+        run: git ls-files -z | xargs -0 uv run detect-secrets-hook --
       - name: Healthy dbt build
         working-directory: demo/dbt_project
         run: uv run --project ../.. dbt build --profiles-dir .
       - run: uv run python evals/run_evals.py --output artifacts/generated/eval-results.json
+
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t lineageguard-ai:ci .

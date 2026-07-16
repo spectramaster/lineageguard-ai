@@ -14,7 +14,8 @@ COPY src ./src
 COPY demo ./demo
 COPY infra ./infra
 
-RUN python -m pip install --no-cache-dir uv==0.6.12 \
+RUN python -m pip install --no-cache-dir --upgrade "pip>=26.1.2" \
+    && python -m pip install --no-cache-dir uv==0.6.12 \
     && uv sync --frozen --no-dev --extra demo --extra datahub
 
 EXPOSE 8000
