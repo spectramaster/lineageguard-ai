@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive evidence replay for LineageGuard AI, a DataHub-powered ML change safety agent.">
+  <meta property="og:title" content="LineageGuard AI — Verified DataHub evidence replay">
+  <meta property="og:description" content="Trace a breaking schema change from DataHub context to a validated repair and durable decision writeback.">
+  <meta property="og:image" content="/assets/lineageguard-cover.png">
+  <title>LineageGuard AI — Verified Evidence Replay</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --bg: #06101c;
+      --panel: #0b192a;
+      --panel-2: #0e2035;
+      --line: #203b58;
+      --muted: #93abc4;
+      --text: #eef7ff;
+      --mint: #72ecc6;
+      --cyan: #73cfff;
+      --orange: #ff9a77;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .35);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 80% -10%, rgba(77, 204, 176, .18), transparent 30%),
+        radial-gradient(circle at 5% 40%, rgba(74, 117, 255, .12), transparent 28%),
+        var(--bg);
+    }
+    a { color: inherit; }
+    .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+      border-bottom: 1px solid rgba(147, 171, 196, .16);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 850; letter-spacing: -.02em; }
+    .brand-mark { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: #032019; background: var(--mint); }
+    nav { display: flex; align-items: center; gap: 12px; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 14px; padding: 9px 11px; }
+    nav a:hover { color: var(--text); }
+    .hero { padding: 92px 0 54px; display: grid; grid-template-columns: 1.08fr .92fr; gap: 52px; align-items: center; }
+    .eyebrow { color: var(--mint); font-weight: 800; letter-spacing: .13em; text-transform: uppercase; font-size: 12px; }
+    h1 { margin: 18px 0 22px; font-size: clamp(48px, 6.5vw, 82px); line-height: .96; letter-spacing: -.055em; }
+    .lead { color: #b2c5d8; font-size: clamp(18px, 2vw, 21px); line-height: 1.6; max-width: 720px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .button { border: 0; border-radius: 12px; padding: 14px 18px; font: inherit; font-weight: 800; cursor: pointer; text-decoration: none; transition: transform .18s ease, background .18s ease; }
+    .button:hover { transform: translateY(-2px); }
+    .primary { color: #032019; background: var(--mint); box-shadow: 0 12px 34px rgba(114, 236, 198, .17); }
+    .secondary { color: var(--text); background: #12263c; border: 1px solid var(--line); }
+    .truth-note { margin-top: 18px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .hero-proof { background: linear-gradient(150deg, #10273b, #091725); border: 1px solid #284867; border-radius: 24px; padding: 24px; box-shadow: var(--shadow); transform: rotate(1.2deg); }
+    .proof-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .live-pill { display: inline-flex; align-items: center; gap: 7px; color: var(--mint); font-size: 12px; font-weight: 750; }
+    .live-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 6px rgba(114, 236, 198, .10); }
+    .score { font-size: 64px; line-height: 1; letter-spacing: -.07em; font-weight: 900; color: var(--orange); }
+    .score small { font-size: 18px; letter-spacing: 0; color: var(--muted); }
+    .proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+    .mini { border-radius: 12px; background: rgba(4, 14, 25, .55); padding: 14px; border: 1px solid rgba(147, 171, 196, .14); }
+    .mini b { display: block; font-size: 22px; margin-top: 8px; }
+    .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .1em; }
+    section { padding: 54px 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 24px; }
+    h2 { margin: 8px 0 0; font-size: clamp(32px, 4vw, 48px); letter-spacing: -.04em; }
+    .section-head p { color: var(--muted); max-width: 540px; line-height: 1.55; margin: 0; }
+    .replay { background: rgba(9, 24, 40, .75); border: 1px solid var(--line); border-radius: 24px; padding: 24px; box-shadow: var(--shadow); }
+    .pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .stage { position: relative; min-height: 142px; border: 1px solid #203b58; border-radius: 15px; padding: 16px; background: #0c1b2d; opacity: .43; transform: translateY(6px); transition: all .35s ease; }
+    .stage.active { opacity: 1; transform: none; border-color: var(--mint); background: linear-gradient(155deg, rgba(31, 79, 77, .6), #0d1c30); }
+    .stage.done { opacity: 1; transform: none; }
+    .stage .number { color: var(--mint); font: 800 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .stage h3 { margin: 18px 0 8px; font-size: 17px; }
+    .stage p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .result { display: none; margin-top: 18px; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .result.show { display: grid; }
+    .metric { border-radius: 14px; padding: 18px; background: var(--panel-2); border: 1px solid var(--line); }
+    .metric strong { display: block; margin-top: 8px; font-size: 26px; }
+    .metric strong.good { color: var(--mint); }
+    .metric strong.bad { color: var(--orange); }
+    .evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+    figure img { width: 100%; aspect-ratio: 2.03 / 1; display: block; object-fit: cover; object-position: top; background: #050b12; }
+    figcaption { padding: 16px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    figcaption b { display: block; color: var(--text); margin-bottom: 5px; }
+    .ledger { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .ledger-card { padding: 22px; background: var(--panel); border: 1px solid var(--line); border-radius: 17px; }
+    .ledger-card h3 { margin: 0 0 14px; }
+    .ledger-card ul { padding-left: 20px; color: var(--muted); line-height: 1.7; }
+    code { color: var(--cyan); overflow-wrap: anywhere; }
+    footer { margin-top: 40px; border-top: 1px solid rgba(147, 171, 196, .16); padding: 28px 0 46px; color: var(--muted); display: flex; justify-content: space-between; gap: 20px; font-size: 13px; }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding-top: 64px; }
+      .hero-proof { transform: none; }
+      .pipeline { grid-template-columns: 1fr 1fr; }
+      .result, .evidence-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 28px, 1180px); }
+      nav a:not(.keep) { display: none; }
+      .hero { padding-top: 44px; }
+      h1 { font-size: 50px; }
+      .pipeline, .result, .evidence-grid, .ledger { grid-template-columns: 1fr; }
+      .section-head, footer { align-items: flex-start; flex-direction: column; }
+      .proof-grid { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand"><span class="brand-mark">LG</span>LineageGuard AI</div>
+      <nav aria-label="Project links">
+        <a href="#evidence">Evidence</a>
+        <a href="https://github.com/spectramaster/lineageguard-ai" target="_blank" rel="noreferrer">Source</a>
+        <a class="keep" href="https://devpost.com/software/lineageguard-ai" target="_blank" rel="noreferrer">Devpost ↗</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">DataHub-powered ML change safety</div>
+          <h1>Stop silent data changes before they break production models.</h1>
+          <p class="lead">LineageGuard traces a schema event through DataHub's context graph, scores the true ML blast radius, proposes the smallest safe repair, proves it with dbt, and preserves the decision for the next engineer or agent.</p>
+          <div class="actions">
+            <button class="button primary" id="startReplay">Replay verified run</button>
+            <a class="button secondary" href="https://www.youtube.com/watch?v=NZnraMjL0iA" target="_blank" rel="noreferrer">Watch 2:19 demo</a>
+          </div>
+          <p class="truth-note">This public judge experience replays a captured, reproducible run against real DataHub OSS 1.6.0 and the official DataHub MCP server 0.6.0. It does not claim to host the full DataHub stack at the edge.</p>
+        </div>
+        <aside class="hero-proof" aria-label="Verified result summary">
+          <div class="proof-head"><span class="live-pill">Verified evidence</span><span class="label">Critical change</span></div>
+          <div class="score">90<small>/100</small></div>
+          <p style="color:#bdd0e2;line-height:1.55">A breaking rename reaches one feature, one model, and one production deployment. The safe decision is to block and remediate.</p>
+          <div class="proof-grid">
+            <div class="mini"><span class="label">Feature</span><b>1</b></div>
+            <div class="mini"><span class="label">Model</span><b>1</b></div>
+            <div class="mini"><span class="label">Deploy</span><b>1</b></div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="replay">
+        <div class="section-head">
+          <div><div class="eyebrow">One bounded agent loop</div><h2>Evidence before automation</h2></div>
+          <p>Every step below corresponds to evidence preserved in the public repository and narrated demo.</p>
+        </div>
+        <div class="replay">
+          <div class="pipeline" aria-live="polite">
+            <article class="stage" data-stage="0"><span class="number">01 / EVENT</span><h3>Breaking rename</h3><p><code>customer_age</code> becomes <code>age_years</code> without compatibility.</p></article>
+            <article class="stage" data-stage="1"><span class="number">02 / CONTEXT</span><h3>Trace DataHub</h3><p>Read ownership, PII, Tier1, and three-hop ML lineage through MCP.</p></article>
+            <article class="stage" data-stage="2"><span class="number">03 / DECIDE</span><h3>Score blast radius</h3><p>Deterministic policy exposes every point behind the 90/100 decision.</p></article>
+            <article class="stage" data-stage="3"><span class="number">04 / PROVE</span><h3>Validate repair</h3><p>Restore the stable contract and run the real dbt build in a temporary copy.</p></article>
+            <article class="stage" data-stage="4"><span class="number">05 / REMEMBER</span><h3>Write back</h3><p>Publish the decision as durable DataHub context for the next responder.</p></article>
+          </div>
+          <div class="result" id="resultCards">
+            <div class="metric"><span class="label">Risk</span><strong class="bad">Critical · 90</strong></div>
+            <div class="metric"><span class="label">Repair</span><strong>Compatibility alias</strong></div>
+            <div class="metric"><span class="label">dbt proof</span><strong class="good">9 / 9 pass</strong></div>
+            <div class="metric"><span class="label">Decision</span><strong class="good">Written back</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="evidence">
+        <div class="section-head">
+          <div><div class="eyebrow">Captured from the verified run</div><h2>Inspect the real graph</h2></div>
+          <p>These are direct screenshots from the local DataHub stack used in the submission—not generated mockups.</p>
+        </div>
+        <div class="evidence-grid">
+          <figure><img src="/assets/datahub-asset.jpg" alt="DataHub dataset showing schema, ownership, PII and Tier1 tags"><figcaption><b>Governed source asset</b>Schema, technical owner, PII, and Tier1 context.</figcaption></figure>
+          <figure><img src="/assets/datahub-lineage.jpg" alt="DataHub lineage graph connecting the changed dataset to ML entities"><figcaption><b>ML blast radius</b>Dataset → feature → model → production deployment.</figcaption></figure>
+          <figure><img src="/assets/datahub-decision.jpg" alt="LineageGuard critical decision document written back into DataHub"><figcaption><b>Durable decision writeback</b>The incident outcome becomes reusable catalog context.</figcaption></figure>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div><div class="eyebrow">Reproducible, bounded, honest</div><h2>Verification ledger</h2></div>
+        </div>
+        <div class="ledger">
+          <article class="ledger-card"><h3>What is proven</h3><ul><li>Real DataHub OSS 1.6.0 graph and official MCP server 0.6.0</li><li>Explainable 90/100 critical risk decision</li><li>All nine dbt nodes and tests pass after the bounded repair</li><li>Decision document persisted as <code>urn:li:document:lineageguard-datahub-31e4e1b6a72c9344</code></li></ul></article>
+          <article class="ledger-card"><h3>Safety boundary</h3><ul><li>MCP access is read-only; mutation tools are disabled</li><li>Patch must match exactly once and is applied only in a temporary copy</li><li>GitHub output, when enabled, is always a draft PR</li><li>Zero-credential fixture and locked Docker path are independently reproducible</li></ul></article>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>LineageGuard AI · Production ML Agents track</span><span>Cloudflare-hosted judge experience · Full implementation on GitHub</span></footer>
+  </div>
+  <script>
+    const button = document.querySelector('#startReplay');
+    const stages = [...document.querySelectorAll('[data-stage]')];
+    const result = document.querySelector('#resultCards');
+    let timer;
+    function replay() {
+      clearInterval(timer);
+      result.classList.remove('show');
+      stages.forEach(stage => stage.className = 'stage');
+      button.disabled = true;
+      button.textContent = 'Tracing verified evidence…';
+      document.querySelector('#replay').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      let index = 0;
+      stages[0].classList.add('active');
+      timer = setInterval(() => {
+        stages[index].classList.remove('active');
+        stages[index].classList.add('done');
+        index += 1;
+        if (index < stages.length) {
+          stages[index].classList.add('active');
+          return;
+        }
+        clearInterval(timer);
+        result.classList.add('show');
+        button.disabled = false;
+        button.textContent = 'Replay verified run';
+      }, 650);
+    }
+    button.addEventListener('click', replay);
+  </script>
+</body>
+</html>
